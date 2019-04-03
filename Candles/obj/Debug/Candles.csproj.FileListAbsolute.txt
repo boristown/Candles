@@ -1,0 +1,7 @@
+G:\Robot\Candles\Candles\bin\Debug\Candles.exe.config
+G:\Robot\Candles\Candles\bin\Debug\Candles.exe
+G:\Robot\Candles\Candles\bin\Debug\Candles.pdb
+G:\Robot\Candles\Candles\obj\Debug\Candles.csprojAssemblyReference.cache
+G:\Robot\Candles\Candles\obj\Debug\Candles.csproj.CoreCompileInputs.cache
+G:\Robot\Candles\Candles\obj\Debug\Candles.exe
+G:\Robot\Candles\Candles\obj\Debug\Candles.pdb
