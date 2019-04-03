@@ -14,6 +14,11 @@ namespace Candles
         public string url_mainpage;
 
         /// <summary>
+        /// Url of markets
+        /// </summary>
+        public static string url_markets = @"https://www.investing.com/markets/";
+
+        /// <summary>
         /// Override Tostring()
         /// </summary>
         /// <returns></returns>

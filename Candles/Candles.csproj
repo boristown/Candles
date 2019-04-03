@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commodities.cs" />
+    <Compile Include="Countries.cs" />
     <Compile Include="CryptoCurrencies.cs" />
     <Compile Include="Currencies.cs" />
     <Compile Include="ETFs.cs" />

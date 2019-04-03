@@ -28,6 +28,14 @@ namespace Candles
             {
                 Console.WriteLine(market.Key + ":" + market.Value);
             }
+            foreach (var continent in Countries.continents)
+            {
+                Console.WriteLine(continent.Key+" Marktes:");
+                foreach (var country in continent.Value)
+                {
+                    Console.WriteLine(Markets.url_markets + country);
+                }
+            }
             Console.ReadLine();
         }
     }
