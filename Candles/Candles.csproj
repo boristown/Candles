@@ -42,8 +42,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commodities.cs" />
+    <Compile Include="CryptoCurrencies.cs" />
+    <Compile Include="Currencies.cs" />
+    <Compile Include="ETFs.cs" />
+    <Compile Include="Indices.cs" />
+    <Compile Include="Markets.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stocks.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

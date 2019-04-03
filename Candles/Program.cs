@@ -8,9 +8,26 @@ namespace Candles
 {
     class Program
     {
+        /// <summary>
+        /// Markets Dictionary
+        /// </summary>
+        static Dictionary<string, Markets> marketDict = new Dictionary<string, Markets>()
+        {
+            { "Indices", new Indices() },
+            { "Stocks", new Stocks() },
+            { "ETFs", new ETFs() },
+            { "Commodities", new Commodities() },
+            { "Currencies", new Currencies() },
+            { "CryptoCurrencies", new CryptoCurrencies() },
+        };
+
         static void Main(string[] args)
         {
             Console.Title = "Candles";
+            foreach (var market in marketDict)
+            {
+                Console.WriteLine(market.Key + ":" + market.Value);
+            }
             Console.ReadLine();
         }
     }
