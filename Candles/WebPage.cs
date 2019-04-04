@@ -137,10 +137,12 @@ namespace Candles
         {
             if (m_links.Count == 0)
             {
-                Regex[] regex = new Regex[2];
-                regex[0] = new Regex(@"<a\shref\s*=""(?<URL>[^""]*).*?>(?<title>[^<]*)</a>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                regex[1] = new Regex("<[i]*frame[^><]+src=(\"|')?(?<url>([^>\"'\\s)])+)(\"|')?[^>]*>", RegexOptions.IgnoreCase);
-                for (int i = 0; i < 2; i++)
+                //Regex[] regex = new Regex[2];
+                Regex[] regex = new Regex[1];
+                regex[0] = new Regex(@"title=""[^><]+""><a\shref\s*=""(?<URL>[^""]*).*?>(?<title>[^<]*)</a></td>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                //regex[1] = new Regex("<[i]*frame[^><]+src=(\"|')?(?<url>([^>\"'\\s)])+)(\"|')?[^>]*>", RegexOptions.IgnoreCase);
+                //for (int i = 0; i < 2; i++)
+                int i = 0;
                 {
                     Match match = regex[i].Match(m_html);
                     while (match.Success)
@@ -149,8 +151,8 @@ namespace Candles
                         {
                             //string url = HttpUtility.UrlDecode(new Uri(m_uri, match.Groups["URL"].Value).AbsoluteUri);
                             string url = new Uri(m_uri, match.Groups["URL"].Value).AbsoluteUri;
-                            string text = "";
-                            if (i == 0) text = new Regex("(<[^>]+>)|(\\s)|( )|&|\"", RegexOptions.Multiline | RegexOptions.IgnoreCase).Replace(match.Groups["text"].Value, "");
+                            string text = match.Groups["title"].Value;
+                            //if (i == 0) text = new Regex("(<[^>]+>)|(\\s)|( )|&|\"", RegexOptions.Multiline | RegexOptions.IgnoreCase).Replace(match.Groups["text"].Value, "");
                             Link link = new Link();
                             link.Text = text;
                             link.NavigateUrl = url;
