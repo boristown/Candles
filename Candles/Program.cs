@@ -26,7 +26,9 @@ namespace Candles
             Console.Title = "Candles";
             foreach (var market in marketDict)
             {
-                Console.WriteLine(market.Key + ":" + market.Value);
+                string webSource = WebHelper.GetHttpWebRequest(market.Value.ToString());
+                Console.WriteLine(market.Key + ":" + market.Value + "(" + webSource.Length +  ")");
+                Console.WriteLine(webSource.Substring(0,1000));
             }
             foreach (var continent in Countries.continents)
             {
