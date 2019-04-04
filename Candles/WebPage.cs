@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
+using System.Windows.Forms;
+using System.Threading.Tasks;
+using mshtml;
 //using System.Web.UI.MobileControls;
 
 namespace Candles
@@ -26,6 +29,7 @@ namespace Candles
         private bool m_good;      //网页是否可用
         private int m_pagesize;    //网页的大小
         private static Dictionary<string, CookieContainer> webcookies = new Dictionary<string, CookieContainer>();//存放所有网页的Cookie
+        private int hitCount = 0;
         #endregion
         #region 属性
         /// <summary>
@@ -66,6 +70,7 @@ namespace Candles
                 return m_html;
             }
         }
+
         /// <summary>
         /// 此属性获得本网页的所有链接信息，只读
         /// </summary>
@@ -77,6 +82,7 @@ namespace Candles
                 return m_links;
             }
         }
+        
         /// <summary>
         /// 此属性返回本网页的全部纯文本信息，只读
         /// </summary>
@@ -260,8 +266,10 @@ namespace Candles
         }
         #endregion
         #region 构造函数
-        private void Init(string _url)
+        private async Task<object> InitAsync(object[] args/*string _url*/)
         {
+            string _url = (string)args[0];
+            //Console.WriteLine("Start working.");
             try
             {
                 m_uri = new Uri(_url);
@@ -270,7 +278,7 @@ namespace Candles
                 m_outstr = "";
                 m_title = "";
                 m_good = true;
-                if (_url.EndsWith(".rar") || _url.EndsWith(".dat") || _url.EndsWith(".msi"))
+                /*if (_url.EndsWith(".rar") || _url.EndsWith(".dat") || _url.EndsWith(".msi"))
                 {
                     m_good = false;
                     return;
@@ -291,7 +299,30 @@ namespace Candles
                         WebPage.webcookies[m_uri.Host] = cc;
                         rqst.CookieContainer = cc;
                     }
-                }
+                }*/
+               // var th = new Thread(() =>
+                //{
+
+                WebBrowser webBrowser = new WebBrowser();
+                webBrowser.ScriptErrorsSuppressed = true;
+                TaskCompletionSource<bool> tcs = null;
+                WebBrowserDocumentCompletedEventHandler documentCompletedHandler = (s, e) =>
+                    tcs.TrySetResult(true);
+                tcs = new TaskCompletionSource<bool>();
+                webBrowser.DocumentCompleted += documentCompletedHandler;
+                webBrowser.Navigate(m_uri);
+                await tcs.Task;
+                var refelements = webBrowser.Document.GetElementById("a");
+                
+                Console.WriteLine(webBrowser.Document.Body.OuterHtml);
+
+                //
+                //Application.Run();
+                //});
+                //th.SetApartmentState(ApartmentState.STA);
+                //th.Start();
+
+                /*
                 HttpWebResponse rsps = (HttpWebResponse)rqst.GetResponse();
                 Stream sm = rsps.GetResponseStream();
                 if (!rsps.ContentType.ToLower().StartsWith("text/") || rsps.ContentLength > 1 << 22)
@@ -341,12 +372,26 @@ namespace Candles
                 }
                 m_pagesize = m_html.Length;
                 m_uri = rsps.ResponseUri;
-                rsps.Close();
+                rsps.Close();*/
             }
             catch (Exception ex)
             {
             }
+            //Console.WriteLine("End working.");
+            return null;
         }
+
+        /*private void BrowseComplete(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            var br = sender as WebBrowser;
+            if (br.Url == e.Url)
+            {
+                Console.WriteLine("Natigated to {0}", e.Url);
+                HtmlDocument doc = br.Document;
+                Application.ExitThread();   // Stops the thread
+            }
+        }*/
+
         public WebPage(string _url)
         {
             string uurl = "";
@@ -356,8 +401,41 @@ namespace Candles
                 _url = uurl;
             }
             catch { };
-            Init(_url);
+            m_uri = new Uri(_url);
+            m_links = new List<Link>();
+            m_html = "";
+            m_outstr = "";
+            m_title = "";
+            m_good = true;
+            WebBrowser browser = new WebBrowser();
+            browser.ScriptErrorsSuppressed = true;
+            browser.Navigating += (sender, e) =>
+            {
+                hitCount++;
+            };
+            browser.DocumentCompleted += (sender, e) =>
+            {
+                hitCount++;
+            };
+            browser.Navigate(_url);
+            while (browser.ReadyState != WebBrowserReadyState.Complete)
+            {
+                Application.DoEvents();
+                Thread.Sleep(1000);
+            }
+            while (hitCount < 2)
+            {
+                Application.DoEvents();
+                Thread.Sleep(1000);
+            }
+            var htmldocument = (HTMLDocument)browser.Document.DomDocument;
+            string gethtml = htmldocument.documentElement.outerHTML;
+            m_html = gethtml;
+            //Console.WriteLine(gethtml);
+            //var task = MessageLoopWorker.Run(InitAsync, _url);
+            //task.Wait();
+            //Init(_url);
         }
-        #endregion
-    }
+    #endregion
+}
 }
